@@ -87,21 +87,27 @@ export function locateConversation(html: string): Rec {
   let root: unknown = null;
   try {
     root = decodeTurboStreamFromHtml(html);
-  } catch {
+  } catch (err) {
+    // Keep the page text out of logs; the error type is enough to diagnose a format change.
+    console.warn("Share payload could not be decoded", err instanceof Error ? err.name : "unknown");
     root = null;
   }
 
-  const rootRecord = asRecord(root);
-  const loaderData = asRecord(rootRecord?.loaderData);
   let serverResponse: Rec | null = null;
-  if (loaderData) {
-    for (const routeData of Object.values(loaderData)) {
-      const found = asRecord(asRecord(routeData)?.serverResponse);
-      if (found) {
-        serverResponse = found;
-        break;
+  const rootRecord = asRecord(root);
+  if (rootRecord) {
+    const loaderData = asRecord(rootRecord.loaderData);
+    if (loaderData) {
+      for (const routeData of Object.values(loaderData)) {
+        const found = asRecord(asRecord(routeData)?.serverResponse);
+        if (found) {
+          serverResponse = found;
+          break;
+        }
       }
     }
+    // The route key can change, so search the decoded tree for the response too.
+    if (!serverResponse) serverResponse = deepFind(rootRecord, 0);
   }
 
   // Legacy pages embedded the same object in __NEXT_DATA__.
@@ -130,6 +136,30 @@ export function locateConversation(html: string): Rec {
     throw new ShareError("PARSE_FAILED", "The conversation data in this page is incomplete.");
   }
   return data;
+}
+
+/** Depth-limited search for a server response, or for a bare conversation object. */
+function deepFind(node: unknown, depth: number): Rec | null {
+  if (depth > 12) return null;
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const found = deepFind(child, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+  const record = asRecord(node);
+  if (!record) return null;
+  const serverResponse = asRecord(record.serverResponse);
+  if (serverResponse && "type" in serverResponse) return serverResponse;
+  if (asRecord(record.mapping) && Object.prototype.hasOwnProperty.call(record, "title")) {
+    return { type: "data", data: record };
+  }
+  for (const child of Object.values(record)) {
+    const found = deepFind(child, depth + 1);
+    if (found) return found;
+  }
+  return null;
 }
 
 function orderedNodes(data: Rec): unknown[] {

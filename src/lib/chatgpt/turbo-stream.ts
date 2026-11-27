@@ -202,11 +202,12 @@ export function extractTurboStream(html: string): string | null {
     if (start < 0) break;
     let i = start + needle.length;
     while (i < html.length && /\s/.test(html[i] ?? "")) i++;
-    if (html[i] !== '"') {
+    const quote = html[i];
+    if (quote !== '"' && quote !== "'") {
       from = Math.max(i, start + needle.length);
       continue;
     }
-    const end = scanJsStringEnd(html, i);
+    const end = scanJsStringEnd(html, i, quote);
     if (end < 0) {
       from = i + 1;
       continue;
@@ -230,7 +231,7 @@ export function decodeTurboStreamFromHtml(html: string): unknown {
   return decodeTurboStream(stream);
 }
 
-function scanJsStringEnd(html: string, openQuote: number): number {
+function scanJsStringEnd(html: string, openQuote: number, quote: string): number {
   let i = openQuote + 1;
   while (i < html.length) {
     const ch = html[i];
@@ -238,20 +239,32 @@ function scanJsStringEnd(html: string, openQuote: number): number {
       i += 2;
       continue;
     }
-    if (ch === '"') return i + 1;
+    if (ch === quote) return i + 1;
     i++;
   }
   return -1;
 }
 
 function decodeJsString(literal: string): string | null {
+  if (literal[0] === "'") return decodeSingleQuoted(literal);
   try {
     const parsed: unknown = JSON.parse(literal);
     if (typeof parsed === "string") return parsed;
   } catch {
-    // JS-only escapes (\xHH, \', line continuation) are handled below.
+    // JS-only escapes (\xHH, line continuation) are handled below.
   }
   return decodeJsStringLiteral(literal);
+}
+
+/** Convert a single-quoted JS literal to a double-quoted JSON string, then decode it. */
+function decodeSingleQuoted(literal: string): string | null {
+  if (literal.length < 2 || literal[literal.length - 1] !== "'") return null;
+  const inner = literal.slice(1, -1).replace(/\\.|"/g, (token) => {
+    if (token === '"') return '\\"';
+    if (token === "\\'") return "'";
+    return token;
+  });
+  return decodeJsStringLiteral(`"${inner}"`);
 }
 
 function decodeJsStringLiteral(literal: string): string | null {

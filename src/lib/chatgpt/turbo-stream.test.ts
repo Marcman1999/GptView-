@@ -17,3 +17,10 @@ describe("turbo-stream decoding", () => {
     expect(() => decodeTurboStream('{"a":1}')).toThrow();
   });
 });
+
+describe("single-quoted payloads", () => {
+  it("extracts and decodes streamController.enqueue('...') literals with escaped quotes", () => {
+    const html = "<script>streamController.enqueue('[\\\"it\\'s\\\"]\\n')</script>";
+    expect(extractTurboStream(html)).toBe('["it\'s"]\n');
+  });
+});
