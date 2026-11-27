@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     });
     const body = await res.text();
     const title = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(body)?.[1]?.slice(0, 120) ?? null;
-    return Response.json({
+    return page({
       status: res.status,
       location: res.headers.get("location"),
       server: res.headers.get("server"),
@@ -38,6 +38,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       head: body.replace(/<script[\s\S]*?<\/script>/gi, "<script/>").replace(/\s+/g, " ").slice(0, 400),
     });
   } catch (err) {
-    return Response.json({ error: err instanceof Error ? `${err.name}: ${err.message}` : "unknown", ms: Date.now() - started }, { status: 502 });
+    return page({ error: err instanceof Error ? `${err.name}: ${err.message}` : "unknown", ms: Date.now() - started });
   }
+}
+
+function page(data: unknown): Response {
+  const text = JSON.stringify(data, null, 2).replace(/</g, "&lt;");
+  return new Response(`<!doctype html><html><body><pre>${text}</pre></body></html>`, {
+    status: 200,
+    headers: { "content-type": "text/html; charset=utf-8" },
+  });
 }
