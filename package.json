@@ -1,0 +1,43 @@
+{
+  "name": "gpt-view",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "node scripts/e2e/ui-check.mjs"
+  },
+  "dependencies": {
+    "@fontsource/anton": "^5.3.0",
+    "katex": "^0.16.47",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "server-only": "^0.0.1",
+    "unist-util-visit": "^5.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.65.1",
+    "puppeteer-core": "^24.43.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
+  }
+}

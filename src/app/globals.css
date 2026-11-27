@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-mist: #f2f2f2;
+  --color-grey: #5c5c5c;
+  --font-display: "Anton", "Impact", "Haettenschweiler", "Arial Narrow Bold", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 50;
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* Markdown inside a response (see src/components/markdown.tsx). */
+.chat-markdown > *:first-child {
+  margin-top: 0;
+}
+.chat-markdown > *:last-child {
+  margin-bottom: 0;
+}
+.chat-markdown p,
+.chat-markdown ul,
+.chat-markdown ol,
+.chat-markdown blockquote {
+  margin: 0 0 1em;
+}
+.chat-markdown ul {
+  list-style: disc;
+  padding-left: 1.5em;
+}
+.chat-markdown ol {
+  list-style: decimal;
+  padding-left: 1.75em;
+}
+.chat-markdown li {
+  margin: 0.35em 0;
+  padding-left: 0.2em;
+}
+.chat-markdown li > p {
+  margin-bottom: 0.4em;
+}
+.chat-markdown strong {
+  font-weight: 700;
+}
+.chat-markdown input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: #000;
+}
+.math-block {
+  margin: 1.25em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
+.katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.katex {
+  font-size: 1.05em;
+}
+.katex-error {
+  color: inherit;
+  border-bottom: 1px dashed #000;
+}
