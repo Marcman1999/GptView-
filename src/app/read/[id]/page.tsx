@@ -75,6 +75,13 @@ export default async function ReadPage({ params }: Props) {
                 ← Back
               </Link>
             </div>
+            <p className="mt-8 text-base text-neutral-800">
+              Still not working?{" "}
+              <Link href="/import" className="font-semibold underline underline-offset-4">
+                Open a saved copy of the page instead
+              </Link>
+              . It is read on your device.
+            </p>
           </section>
         )}
       </main>
