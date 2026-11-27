@@ -279,3 +279,37 @@ describe("cleanAssistantMarkdown", () => {
     expect(out).toBe('```python\nprint("x")\n```');
   });
 });
+
+describe("payload location", () => {
+  /**
+   * A turbo-stream page whose loader route key has been renamed. Layout: each array entry
+   * is a value; integers point at other entries. Holds one user message: "Hello from a renamed route".
+   */
+  const renamedRouteValues = [
+    { loaderData: 1 },
+    { routeRenamed: 2 },
+    { serverResponse: 3 },
+    { type: 4, data: 5 },
+    "data",
+    { title: 6, linear_conversation: 7 },
+    "Renamed route",
+    [8],
+    { message: 9 },
+    { id: 10, author: 11, content: 12 },
+    "m1",
+    { role: 13 },
+    { content_type: 14, parts: 15 },
+    "user",
+    "text",
+    [16],
+    "Hello from a renamed route",
+  ];
+
+  it("still finds the conversation when the loader route key changes", () => {
+    const stream = JSON.stringify(renamedRouteValues) + "\n";
+    const html = `<html><script>streamController.enqueue(${JSON.stringify(stream)})</script></html>`;
+    const convo = parseChatGptPage(html, ID, URL_);
+    expect(convo.title).toBe("Renamed route");
+    expect(convo.turns[0].blocks[0]).toMatchObject({ kind: "markdown", text: "Hello from a renamed route" });
+  });
+});
