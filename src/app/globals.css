@@ -1,12 +1,42 @@
 @import "tailwindcss";
 
-@theme inline {
+/* Colour tokens. Light is the default; dark follows the system or the reader's choice. */
+@theme {
   --color-ink: #000000;
   --color-paper: #ffffff;
   --color-mist: #f2f2f2;
   --color-grey: #5c5c5c;
-  --font-display: "Anton", "Impact", "Haettenschweiler", "Arial Narrow Bold", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --color-body: #262626;
+}
+
+@theme inline {
+  --font-display:
+    "Anton", "Impact", "Haettenschweiler", "Arial Narrow Bold", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Noto Sans SC", sans-serif;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Dark palette: explicit choice (html.dark) or system preference when no explicit light choice is stored. */
+html.dark {
+  --color-ink: #ffffff;
+  --color-paper: #000000;
+  --color-mist: #161616;
+  --color-grey: #a3a3a3;
+  --color-body: #e5e5e5;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    --color-ink: #ffffff;
+    --color-paper: #000000;
+    --color-mist: #161616;
+    --color-grey: #a3a3a3;
+    --color-body: #e5e5e5;
+    color-scheme: dark;
+  }
+}
+html.light {
+  color-scheme: light;
 }
 
 @layer base {
@@ -19,7 +49,7 @@
     overflow-x: hidden;
   }
   :focus-visible {
-    outline: 3px solid #000;
+    outline: 3px solid var(--color-ink);
     outline-offset: 3px;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -37,8 +67,8 @@
   left: 1rem;
   top: -100px;
   z-index: 50;
-  background: #000;
-  color: #fff;
+  background: var(--color-ink);
+  color: var(--color-paper);
   padding: 0.5rem 1rem;
   font-weight: 700;
 }
@@ -87,7 +117,7 @@
 }
 .chat-markdown input[type="checkbox"] {
   margin-right: 0.5em;
-  accent-color: #000;
+  accent-color: var(--color-ink);
 }
 .math-block {
   margin: 1.25em 0;
@@ -105,5 +135,5 @@
 }
 .katex-error {
   color: inherit;
-  border-bottom: 1px dashed #000;
+  border-bottom: 1px dashed var(--color-ink);
 }

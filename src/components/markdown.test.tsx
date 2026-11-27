@@ -23,7 +23,8 @@ describe("Markdown safety", () => {
   it("replaces remote images with an honest placeholder instead of loading them", () => {
     const { container } = render(<Markdown text={"![chart](https://example.com/chart.png)"} />);
     expect(container.querySelector("img")).toBeNull();
-    expect(container.textContent).toContain("Image not shown yet: chart");
+    expect(container.textContent).toContain("Image · chart");
+    expect(container.textContent).toContain("can't be shown in this reader yet");
   });
 
   it("renders display math written as \\[ \\] on its own block", () => {

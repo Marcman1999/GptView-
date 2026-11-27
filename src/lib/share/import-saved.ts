@@ -12,15 +12,24 @@ export type SavedPageResult = { ok: true; conversation: Conversation } | { ok: f
  */
 export function parseSavedPage(html: string, label = "saved-page"): SavedPageResult {
   if (html.trim() === "") {
-    return { ok: false, message: "The file is empty. Save the share page again and choose it here." };
+    return {
+      ok: false,
+      message: "The file is empty. Save the share page again and choose it here.",
+    };
   }
   if (new Blob([html]).size > MAX_SAVED_BYTES) {
-    return { ok: false, message: "That file is larger than 5 MB, so it can't be read here." };
+    return {
+      ok: false,
+      message: "That file is larger than 5 MB, so it can't be read here.",
+    };
   }
   try {
     return { ok: true, conversation: parseChatGptPage(html, label, label) };
   } catch (err) {
     if (err instanceof ShareError) return { ok: false, message: err.message };
-    return { ok: false, message: "This file doesn't look like a saved ChatGPT share page." };
+    return {
+      ok: false,
+      message: "This file doesn't look like a saved ChatGPT share page.",
+    };
   }
 }
