@@ -13,13 +13,22 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#000000",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
+
+// Applies the reader's saved theme before first paint, so dark mode does not flash.
+const themeScript = `try{var t=localStorage.getItem("gpt-view-theme");if(t==="light"||t==="dark"){document.documentElement.classList.add(t)}}catch(e){}`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-dvh bg-white text-black antialiased">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-dvh bg-paper text-ink antialiased">
         <a href="#main" className="skip-link">
           Skip to content
         </a>

@@ -46,18 +46,18 @@ export function ShareForm() {
             if (error) setError(null);
           }}
           aria-invalid={error ? true : undefined}
-          className="min-h-14 w-full min-w-0 border-2 border-black bg-white px-4 py-3 text-base text-black placeholder:text-neutral-400 focus:outline-3 focus:outline-offset-2 focus:outline-black"
+          className="min-h-14 w-full min-w-0 border-2 border-ink bg-paper px-4 py-3 text-base text-ink placeholder:text-grey focus:outline-3 focus:outline-offset-2 focus:outline-ink"
         />
         <button
           type="submit"
           disabled={submitting}
-          className="font-display min-h-14 shrink-0 border-2 border-black bg-black px-8 py-3 text-xl text-white transition-colors hover:bg-white hover:text-black focus-visible:outline-3 focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-70 sm:text-2xl"
+          className="font-display min-h-14 shrink-0 border-2 border-ink bg-ink px-8 py-3 text-xl text-paper transition-colors hover:bg-paper hover:text-ink focus-visible:outline-3 focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-70 sm:text-2xl"
         >
           {submitting ? "Opening…" : "Open"}
         </button>
       </div>
       <div id={errorId} role="alert" aria-live="polite" className="mt-3 min-h-6 text-base font-semibold">
-        {error ? <p className="border-l-4 border-black pl-3">{error}</p> : null}
+        {error ? <p className="border-l-4 border-ink pl-3">{error}</p> : null}
       </div>
     </form>
   );
