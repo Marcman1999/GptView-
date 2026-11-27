@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isValidShareId } from "@/lib/share-url";
-import { loadShare } from "@/lib/share/load-share";
+import { getShare } from "@/lib/share/get-share";
 import type { ShareErrorCode } from "@/lib/share/model";
-import { BasicConversation } from "@/components/basic-conversation";
+import { ConversationView } from "@/components/conversation-view";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,9 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   if (!isValidShareId(id)) return { title: "Not found" };
-  return { title: "Reader" };
+  const result = await getShare(id);
+  if (result.ok) return { title: result.conversation.title };
+  return { title: "Chat not available" };
 }
 
 const HEADINGS: Record<ShareErrorCode, string> = {
@@ -29,7 +31,7 @@ export default async function ReadPage({ params }: Props) {
   const { id } = await params;
   if (!isValidShareId(id)) notFound();
 
-  const result = await loadShare(id);
+  const result = await getShare(id);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -52,7 +54,7 @@ export default async function ReadPage({ params }: Props) {
             </p>
             <h1 className="font-display mt-2 text-4xl sm:text-5xl">{result.conversation.title}</h1>
             <div className="mt-10">
-              <BasicConversation conversation={result.conversation} />
+              <ConversationView conversation={result.conversation} />
             </div>
           </>
         ) : (

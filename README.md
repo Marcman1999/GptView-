@@ -52,3 +52,12 @@ scripts/e2e/ui-check.mjs      browser checks
 - Test fixtures in `src/lib/chatgpt/fixtures/` are real saved share pages from the MIT-licensed [ai-chat-share-export](https://github.com/xiaobin7060/ai-chat-share-export) project (licence copied alongside).
 
 The sandbox cannot reach chatgpt.com, so live fetching is verified only after deployment.
+
+## Phase 3: rendering text, Markdown, math and code
+
+- `src/components/markdown.tsx` renders responses with GitHub Markdown (tables, task lists), KaTeX math, copyable code blocks, and safe links. Raw HTML from shared content is never rendered.
+- `src/lib/markdown/math.ts` pulls out `\( … \)`, `\[ … \]`, `$$ … $$`, and `$…$` that looks like a formula before Markdown parsing. Prices such as `$5.4 million` stay as text. Code blocks and code spans are not touched.
+- Remote images are not loaded yet. They show a placeholder with a link to the original (Phase 4).
+- `src/components/conversation-view.tsx` shows the full conversation in order. Reasoning is collapsed in a disclosure. Unsupported content shows a note.
+- The reader route uses one memoised load for the page and the title (`src/lib/share/get-share.ts`).
+- Security headers (`nosniff`, `X-Frame-Options: DENY`, referrer policy) are set in `next.config.ts`. A full Content-Security-Policy comes in Phase 8.

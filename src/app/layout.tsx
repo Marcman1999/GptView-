@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource/anton/400.css";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
