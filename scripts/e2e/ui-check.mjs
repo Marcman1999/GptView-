@@ -87,8 +87,12 @@ for (const vp of VIEWPORTS) {
   ]);
   check(`${tag} valid link navigates to /read/<id>`, new URL(page.url()).pathname === `/read/${VALID_ID}`);
   await page.waitForSelector("h1");
+  // The sandbox has no route to chatgpt.com, so the reader must show a clear error here
+  // (not a blank page). On a machine with access it shows the conversation.
   const readH1 = await page.$eval("h1", (el) => el.textContent.trim());
-  check(`${tag} reader route renders`, readH1.length > 0, readH1);
+  const hasConversation = await page.$("[data-testid=conversation]");
+  const hasError = await page.$("[data-testid=share-error]");
+  check(`${tag} reader shows conversation or clear error`, Boolean(hasConversation || hasError), readH1);
   const readOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   check(`${tag} no horizontal overflow on reader route`, readOverflow <= 0, `overflow=${readOverflow}px`);
   await page.screenshot({ path: path.join(SHOTS, `reader-placeholder-${vp.name}.png`), fullPage: true });

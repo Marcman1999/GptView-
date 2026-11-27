@@ -18,6 +18,11 @@ export type ShareUrlResult =
 
 export type ShareUrlErrorReason = "empty" | "not-url" | "wrong-host" | "not-share" | "bad-id";
 
+/** The canonical public address for a share ID. */
+export function shareUrlForId(id: string): string {
+  return `https://chatgpt.com/share/${id.toLowerCase()}`;
+}
+
 export function isValidShareId(id: string): boolean {
   return UUID_PATTERN.test(id);
 }

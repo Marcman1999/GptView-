@@ -42,3 +42,13 @@ src/components/share-form.tsx link input with validation
 src/lib/share-url.ts          share-link parsing and validation
 scripts/e2e/ui-check.mjs      browser checks
 ```
+
+## Phase 2: reading shared chats (server side)
+
+- `src/lib/chatgpt/turbo-stream.ts` decodes the React Router payload embedded in share pages.
+- `src/lib/chatgpt/parser.ts` turns it into a provider-neutral `Conversation` (`src/lib/share/model.ts`). It follows the visible branch, merges consecutive assistant messages into one response, skips hidden and internal items (counted in `stats`), and marks anything it can't reproduce as an `unsupported` block.
+- `src/lib/share/fetch-share.ts` fetches only `https://chatgpt.com/share/<id>`, follows same-site redirects only, and caps time and size.
+- `GET /api/share/<id>` returns the conversation JSON or a coded error.
+- Test fixtures in `src/lib/chatgpt/fixtures/` are real saved share pages from the MIT-licensed [ai-chat-share-export](https://github.com/xiaobin7060/ai-chat-share-export) project (licence copied alongside).
+
+The sandbox cannot reach chatgpt.com, so live fetching is verified only after deployment.
